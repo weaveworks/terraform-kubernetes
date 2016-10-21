@@ -1,10 +1,3 @@
-variable "cidr_block" {
-    default = "172.20.0.0/16"
-}
-
-variable "cluster_name" {
-}
-
 resource "aws_vpc" "main" {
     cidr_block = "${var.cidr_block}"
     enable_dns_hostnames = true
@@ -63,10 +56,21 @@ resource "aws_security_group" "masters" {
     }
 }
 
-resource "aws_security_group_rule" "masters-disallow-ingress" {
+resource "aws_security_group_rule" "masters-allow-minions" {
     security_group_id = "${aws_security_group.masters.id}"
 
     type = "ingress"
+    source_security_group_id = "${aws_security_group.minions.id}"
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+}
+
+resource "aws_security_group_rule" "masters-allow-masters" {
+    security_group_id = "${aws_security_group.masters.id}"
+
+    type = "ingress"
+    self = true
     from_port = 0
     to_port = 0
     protocol = "-1"
@@ -92,7 +96,7 @@ resource "aws_security_group_rule" "masters-allow-https" {
     cidr_blocks = ["0.0.0.0/0"]
 }
 
-resource "aws_security_group_rule" "masters-disallow-egress" {
+resource "aws_security_group_rule" "masters-allow-egress" {
     security_group_id = "${aws_security_group.masters.id}"
 
     type = "egress"
@@ -112,10 +116,21 @@ resource "aws_security_group" "minions" {
     }
 }
 
-resource "aws_security_group_rule" "minions-disallow-ingress" {
+resource "aws_security_group_rule" "minions-allow-minions" {
     security_group_id = "${aws_security_group.minions.id}"
 
     type = "ingress"
+    self = true
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+}
+
+resource "aws_security_group_rule" "minions-allow-masters" {
+    security_group_id = "${aws_security_group.minions.id}"
+
+    type = "ingress"
+    source_security_group_id = "${aws_security_group.masters.id}"
     from_port = 0
     to_port = 0
     protocol = "-1"
@@ -131,7 +146,7 @@ resource "aws_security_group_rule" "minions-allow-ssh" {
     cidr_blocks = ["0.0.0.0/0"]
 }
 
-resource "aws_security_group_rule" "minions-disallow-egress" {
+resource "aws_security_group_rule" "minions-allow-egress" {
     security_group_id = "${aws_security_group.minions.id}"
 
     type = "egress"
@@ -148,9 +163,29 @@ resource "aws_internet_gateway" "gw" {
 resource "aws_subnet" "main" {
     vpc_id = "${aws_vpc.main.id}"
     cidr_block = "172.20.0.0/24"
+    availability_zone = "${var.availability_zone}"
 
     tags {
         KubernetesCluster = "${var.cluster_name}"
     }
 }
 
+resource "aws_route_table" "main" {
+    vpc_id = "${aws_vpc.main.id}"
+
+    tags {
+        KubernetesCluster = "${var.cluster_name}"
+    }
+}
+
+resource "aws_route_table_association" "main" {
+    subnet_id = "${aws_subnet.main.id}"
+    route_table_id = "${aws_route_table.main.id}"
+}
+
+resource "aws_route" "internet-route" {
+    route_table_id = "${aws_route_table.main.id}"
+    destination_cidr_block = "0.0.0.0/0"
+    gateway_id = "${aws_internet_gateway.gw.id}"
+    depends_on = ["aws_route_table.main"]
+}
