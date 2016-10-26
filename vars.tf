@@ -1,8 +1,8 @@
-variable "cluster_name" {
+variable cluster_name {
     description = "The name of the cluster; will be used to tag objects in AWS.  Each cluster should have a different name to allow multiple clusters to exist in the same AWS region / account."
 }
 
-variable "cidr_block" {
+variable vpc_cidr_block {
     default = "172.20.0.0/16"
 }
 
@@ -35,4 +35,20 @@ variable iam_suffix {
 
 variable num_minions {
     default = 3
+}
+
+variable hosts_cidr_block {
+    default = "172.20.0.0/24"
+}
+
+variable autoscaling_group_suffix {
+    default = ""
+}
+
+output "minion_security_group_id" {
+    value = "${aws_security_group.minions.id}"
+}
+
+output "subnet_id" {
+    value = "${aws_subnet.main.id}"
 }

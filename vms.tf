@@ -59,7 +59,7 @@ resource "aws_launch_configuration" "minions" {
 }
 
 resource "aws_autoscaling_group" "minions" {
-    name = "${var.cluster_name}-minion-group-${var.availability_zone}"
+    name = "${var.cluster_name}-minion-group${var.autoscaling_group_suffix}"
     launch_configuration = "${aws_launch_configuration.minions.name}"
 
     tag {

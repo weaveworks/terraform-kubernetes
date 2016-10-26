@@ -1,5 +1,5 @@
 resource "aws_vpc" "main" {
-    cidr_block = "${var.cidr_block}"
+    cidr_block = "${var.vpc_cidr_block}"
     enable_dns_hostnames = true
 
     tags {
@@ -162,7 +162,7 @@ resource "aws_internet_gateway" "gw" {
 
 resource "aws_subnet" "main" {
     vpc_id = "${aws_vpc.main.id}"
-    cidr_block = "172.20.0.0/24"
+    cidr_block = "${var.hosts_cidr_block}"
     availability_zone = "${var.availability_zone}"
 
     tags {
