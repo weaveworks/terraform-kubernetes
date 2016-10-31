@@ -189,3 +189,19 @@ resource "aws_route" "internet-route" {
     gateway_id = "${aws_internet_gateway.gw.id}"
     depends_on = ["aws_route_table.main"]
 }
+
+resource "aws_route" "master-route" {
+    count = "${var.num_masters}"
+    route_table_id = "${aws_route_table.main.id}"
+
+    destination_cidr_block = "${cidrsubnet(var.container_cidr_block, 8, 100 + count.index)}"
+    instance_id = "${element(aws_instance.minion.*.id, count.index)}"
+}
+
+resource "aws_route" "minion-route" {
+    count = "${var.num_minions}"
+    route_table_id = "${aws_route_table.main.id}"
+
+    destination_cidr_block = "${cidrsubnet(var.container_cidr_block, 8, 254 - count.index)}"
+    instance_id = "${element(aws_instance.minion.*.id, count.index)}"
+}

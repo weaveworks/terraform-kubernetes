@@ -4,9 +4,12 @@ resource "aws_key_pair" "main" {
 }
 
 resource "aws_instance" "master" {
+    count = "${var.num_masters}"
+
     ami = "${var.ami_id}"
     instance_type = "${var.master_instance_type}"
     iam_instance_profile = "${aws_iam_instance_profile.master.name}"
+    key_name = "${aws_key_pair.main.key_name}"
 
     tags {
         KubernetesCluster = "${var.cluster_name}"
@@ -15,81 +18,41 @@ resource "aws_instance" "master" {
     }
 
     associate_public_ip_address = true
-    availability_zone = "${var.availability_zone}"
+    source_dest_check = true
     subnet_id = "${aws_subnet.main.id}"
-    key_name = "${aws_key_pair.main.key_name}"
+    availability_zone = "${var.availability_zone}"
     vpc_security_group_ids = ["${aws_security_group.masters.id}"]
 }
 
-resource "aws_launch_configuration" "minions" {
-    name_prefix = "${var.cluster_name}-minion-group-${var.availability_zone}-${var.minion_instance_type}"
-    image_id = "${var.ami_id}"
+resource "aws_instance" "minion" {
+    count = "${var.num_minions}"
+
+    ami = "${var.ami_id}"
     instance_type = "${var.minion_instance_type}"
-
-    associate_public_ip_address = true
-
-    ephemeral_block_device {
-        virtual_name = "ephemeral0"
-        device_name = "/dev/sdc"
-    }
-
-    ephemeral_block_device {
-        virtual_name = "ephemeral1"
-        device_name = "/dev/sdd"
-    }
-
-    ephemeral_block_device {
-        virtual_name = "ephemeral2"
-        device_name = "/dev/sde"
-    }
-
-    ephemeral_block_device {
-        virtual_name = "ephemeral3"
-        device_name = "/dev/sdf"
-    }
-
     iam_instance_profile = "${aws_iam_instance_profile.minions.name}"
-    security_groups = ["${aws_security_group.minions.id}"]
-
     key_name = "${aws_key_pair.main.key_name}"
 
-    lifecycle {
-      create_before_destroy = true
-    }
-}
-
-resource "aws_autoscaling_group" "minions" {
-    name = "${var.cluster_name}-minion-group${var.autoscaling_group_suffix}"
-    launch_configuration = "${aws_launch_configuration.minions.name}"
-
-    tag {
-        key = "Name"
-        value = "${var.cluster_name}-minion"
-        propagate_at_launch = true
+    tags {
+        KubernetesCluster = "${var.cluster_name}"
+        Name = "${var.cluster_name}-minion"
+        Role = "${var.cluster_name}-minion"
     }
 
-    tag {
-        key = "Role"
-        value = "${var.cluster_name}-minion"
-        propagate_at_launch = true
+    associate_public_ip_address = true
+    source_dest_check = false
+    subnet_id = "${aws_subnet.main.id}"
+    availability_zone = "${var.availability_zone}"
+    vpc_security_group_ids = ["${aws_security_group.minions.id}"]
+
+    ephemeral_block_device {
+        device_name = "/dev/xvdb"
+        virtual_name = "ephemeral0"
     }
 
-    tag {
-        key = "KubernetesCluster"
-        value = "${var.cluster_name}"
-        propagate_at_launch = true
+    ephemeral_block_device {
+        device_name = "/dev/xvdc"
+        virtual_name = "ephemeral1"
     }
-
-    max_size = "${var.num_minions}"
-    min_size = "${var.num_minions}"
-
-    availability_zones = ["${var.availability_zone}"]
-    vpc_zone_identifier  = ["${aws_subnet.main.id}"]
-
-    health_check_grace_period = "0"
-    metrics_granularity = ""
-
-    force_delete = "false"
 }
 
 resource "aws_iam_instance_profile" "minions" {

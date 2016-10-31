@@ -6,6 +6,14 @@ variable vpc_cidr_block {
     default = "172.20.0.0/16"
 }
 
+variable hosts_cidr_block {
+    default = "172.20.0.0/24"
+}
+
+variable container_cidr_block {
+    default = "10.244.0.0/16"
+}
+
 variable ami_id {
     // default AMI is k8s-1.3-debian-jessie, the default from kube-up
     // See https://cloud-images.ubuntu.com/locator/ec2/ for others.
@@ -33,12 +41,12 @@ variable iam_suffix {
 	default = ""
 }
 
-variable num_minions {
-    default = 3
+variable num_masters {
+    default = 1
 }
 
-variable hosts_cidr_block {
-    default = "172.20.0.0/24"
+variable num_minions {
+    default = 3
 }
 
 variable autoscaling_group_suffix {
