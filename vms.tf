@@ -22,6 +22,16 @@ resource "aws_instance" "master" {
     subnet_id = "${aws_subnet.main.id}"
     availability_zone = "${var.availability_zone}"
     vpc_security_group_ids = ["${aws_security_group.masters.id}"]
+
+    ephemeral_block_device {
+        device_name = "/dev/xvdb"
+        virtual_name = "ephemeral0"
+    }
+
+    ephemeral_block_device {
+        device_name = "/dev/xvdc"
+        virtual_name = "ephemeral1"
+    }
 }
 
 resource "aws_instance" "minion" {
