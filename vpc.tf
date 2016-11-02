@@ -156,6 +156,26 @@ resource "aws_security_group_rule" "minions-allow-egress" {
     cidr_blocks = ["0.0.0.0/0"]
 }
 
+resource "aws_security_group_rule" "minions-allow-http" {
+    security_group_id = "${aws_security_group.minions.id}"
+
+    type = "ingress"
+    from_port = 30080  // Defined in default/frontend-svc.yaml
+    to_port = 30080
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+}
+
+resource "aws_security_group_rule" "minions-allow-https" {
+    security_group_id = "${aws_security_group.minions.id}"
+
+    type = "ingress"
+    from_port = 30443 // Defined in default/frontend-svc.yaml
+    to_port = 30443
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+}
+
 resource "aws_internet_gateway" "gw" {
     vpc_id = "${aws_vpc.main.id}"
 }

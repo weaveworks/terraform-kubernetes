@@ -2,12 +2,16 @@ variable cluster_name {
     description = "The name of the cluster; will be used to tag objects in AWS.  Each cluster should have a different name to allow multiple clusters to exist in the same AWS region / account."
 }
 
+variable elb_name {
+    description = "The name of the ELB. Required."
+}
+
 variable vpc_cidr_block {
     default = "172.20.0.0/16"
 }
 
 variable hosts_cidr_block {
-    default = "172.20.0.0/24"
+    default = "172.20.1.0/24"
 }
 
 variable container_cidr_block {
@@ -15,10 +19,10 @@ variable container_cidr_block {
 }
 
 variable ami_id {
-    // default AMI is k8s-1.3-debian-jessie, the default from kube-up
+    // Ubuntu xenial 16.04, instance store, HVM
     // See https://cloud-images.ubuntu.com/locator/ec2/ for others.
     // HVM, ebs-root only please.
-    default = "ami-08ee2f65"
+    default = "ami-fd6e3bea"
 }
 
 variable master_instance_type {
@@ -49,14 +53,3 @@ variable num_minions {
     default = 3
 }
 
-variable autoscaling_group_suffix {
-    default = ""
-}
-
-output "minion_security_group_id" {
-    value = "${aws_security_group.minions.id}"
-}
-
-output "subnet_id" {
-    value = "${aws_subnet.main.id}"
-}
