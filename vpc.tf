@@ -215,7 +215,7 @@ resource "aws_route" "master-route" {
     route_table_id = "${aws_route_table.main.id}"
 
     destination_cidr_block = "${cidrsubnet(var.container_cidr_block, 8, 100 + count.index)}"
-    instance_id = "${element(aws_instance.minion.*.id, count.index)}"
+    instance_id = "${element(aws_instance.master.*.id, count.index)}"
 }
 
 resource "aws_route" "minion-route" {

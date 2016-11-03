@@ -18,7 +18,11 @@ resource "aws_instance" "master" {
     }
 
     associate_public_ip_address = true
-    source_dest_check = true
+
+    // Allows the VM to masquerade IPs (for pods). Otherwise, the
+    // AWS runtime restricts the VM traffic to only appear as its
+    // own IP.
+    source_dest_check = false
     subnet_id = "${aws_subnet.main.id}"
     availability_zone = "${var.availability_zone}"
     vpc_security_group_ids = ["${aws_security_group.masters.id}"]
@@ -49,6 +53,10 @@ resource "aws_instance" "minion" {
     }
 
     associate_public_ip_address = true
+
+    // Allows the VM to masquerade IPs (for pods). Otherwise, the
+    // AWS runtime restricts the VM traffic to only appear as its
+    // own IP.
     source_dest_check = false
     subnet_id = "${aws_subnet.main.id}"
     availability_zone = "${var.availability_zone}"
