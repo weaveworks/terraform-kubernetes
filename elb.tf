@@ -1,7 +1,6 @@
 resource "aws_elb" "main" {
     name = "${var.elb_name}"
-    subnets = ["${aws_subnet.main.id}"]
-    cross_zone_load_balancing = "false"
+    subnets = ["${aws_subnet.main.*.id}"]
 
     tags {
         KubernetesCluster = "${var.cluster_name}"

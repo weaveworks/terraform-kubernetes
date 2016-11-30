@@ -10,10 +10,6 @@ variable vpc_cidr_block {
     default = "172.20.0.0/16"
 }
 
-variable hosts_cidr_block {
-    default = "172.20.1.0/24"
-}
-
 variable container_cidr_block {
     default = "10.244.0.0/16"
 }
@@ -33,9 +29,11 @@ variable minion_instance_type {
     default = "c3.4xlarge"
 }
 
-variable availability_zone {
-    default = "us-east-1a"
+variable num_azs {
+    default = "1"
 }
+
+data "aws_availability_zones" "available" {}
 
 variable key_pair_name {
     default = "kubernetes-key-pair"
