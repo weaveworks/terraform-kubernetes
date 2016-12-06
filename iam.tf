@@ -9,6 +9,16 @@ resource "aws_security_group" "masters" {
     }
 }
 
+resource "aws_security_group_rule" "masters-allow-elb" {
+    security_group_id = "${aws_security_group.masters.id}"
+
+    type = "ingress"
+    source_security_group_id = "${aws_elb.master.source_security_group_id}"
+    from_port = 443
+    to_port = 443
+    protocol = "tcp"
+}
+
 resource "aws_security_group_rule" "masters-allow-minions" {
     security_group_id = "${aws_security_group.masters.id}"
 
@@ -115,7 +125,7 @@ resource "aws_security_group_rule" "minions-allow-http" {
     type = "ingress"
     from_port = 30080  // Defined in default/frontend-svc.yaml
     to_port = 30080
-    protocol = "-1"
+    protocol = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
 }
 
@@ -126,5 +136,35 @@ resource "aws_security_group_rule" "minions-allow-https" {
     from_port = 30443 // Defined in default/frontend-svc.yaml
     to_port = 30443
     protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+}
+
+resource "aws_security_group" "master-elb" {
+    vpc_id = "${aws_vpc.main.id}"
+    name = "kubernetes-master-elb-${var.cluster_name}"
+    description = "Kubernetes security group for master API ELB"
+
+    tags {
+        KubernetesCluster = "${var.cluster_name}"
+    }
+}
+
+resource "aws_security_group_rule" "master-elb-allow-https" {
+    security_group_id = "${aws_security_group.master-elb.id}"
+
+    type = "ingress"
+    from_port = 443
+    to_port = 443
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+}
+
+resource "aws_security_group_rule" "master-elb-allow-egress" {
+    security_group_id = "${aws_security_group.master-elb.id}"
+
+    type = "egress"
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
     cidr_blocks = ["0.0.0.0/0"]
 }
