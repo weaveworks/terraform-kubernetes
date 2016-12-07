@@ -1,7 +1,7 @@
 resource "aws_elb" "main" {
     name = "${var.elb_name}"
     subnets = ["${aws_subnet.main.*.id}"]
-    // TODO need to start maintaining the ELB security group
+    security_groups = ["${aws_security_group.frontend-elb.id}"]
 
     tags {
         KubernetesCluster = "${var.cluster_name}"
