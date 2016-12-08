@@ -139,6 +139,17 @@ resource "aws_security_group_rule" "minions-allow-https" {
     cidr_blocks = ["0.0.0.0/0"]
 }
 
+resource "aws_security_group_rule" "minions-allow-extra" {
+    count = "${var.enable_extra_minion_security_group}"
+    security_group_id = "${aws_security_group.minions.id}"
+
+    type = "ingress"
+    source_security_group_id = "${var.extra_minion_security_group}"
+    from_port = 30081 // Defined in default/authfe-nodeport-svc.yaml
+    to_port = 30081
+    protocol = "tcp"
+}
+
 resource "aws_security_group" "frontend-elb" {
     vpc_id = "${aws_vpc.main.id}"
     name = "k8s-elb-${var.elb_name}"
