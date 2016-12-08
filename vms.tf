@@ -8,6 +8,7 @@ resource "aws_instance" "master" {
     lifecycle {
         prevent_destroy = true
     }
+    disable_api_termination = true
 
     ami = "${var.ami_id}"
     instance_type = "${var.master_instance_type}"
@@ -46,6 +47,7 @@ resource "aws_instance" "minion" {
     lifecycle {
         prevent_destroy = true
     }
+    disable_api_termination = true
 
     ami = "${var.ami_id}"
     instance_type = "${var.minion_instance_type}"
