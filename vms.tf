@@ -5,6 +5,10 @@ resource "aws_key_pair" "main" {
 
 resource "aws_instance" "master" {
     count = "${var.num_masters}"
+    lifecycle {
+        prevent_destroy = true
+    }
+    disable_api_termination = true
 
     ami = "${var.ami_id}"
     instance_type = "${var.master_instance_type}"
@@ -40,6 +44,10 @@ resource "aws_instance" "master" {
 
 resource "aws_instance" "minion" {
     count = "${var.num_minions}"
+    lifecycle {
+        prevent_destroy = true
+    }
+    disable_api_termination = true
 
     ami = "${var.ami_id}"
     instance_type = "${var.minion_instance_type}"
