@@ -145,8 +145,8 @@ resource "aws_security_group_rule" "minions-allow-extra" {
 
     type = "ingress"
     source_security_group_id = "${var.extra_minion_security_group}"
-    from_port = 30081 // Defined in default/authfe-nodeport-svc.yaml
-    to_port = 30081
+    from_port = "${var.extra_minion_security_group_port}"
+    to_port = "${var.extra_minion_security_group_port}"
     protocol = "tcp"
 }
 

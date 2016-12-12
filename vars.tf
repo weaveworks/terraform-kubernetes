@@ -58,6 +58,11 @@ variable extra_minion_security_group {
     default = ""
 }
 
+variable extra_minion_security_group_port {
+    description = "Port on which the extra security groups that will be allow to talk to the minions"
+    default = 80
+}
+
 variable enable_frontend_elb {
     default = true
 }
