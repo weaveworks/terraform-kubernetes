@@ -1,4 +1,5 @@
 resource "aws_elb" "main" {
+    count = "${var.enable_frontend_elb}"
     name = "${var.elb_name}"
     subnets = ["${aws_subnet.main.*.id}"]
     security_groups = ["${aws_security_group.frontend-elb.id}"]

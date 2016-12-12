@@ -33,8 +33,6 @@ variable num_azs {
     default = "1"
 }
 
-data "aws_availability_zones" "available" {}
-
 variable key_pair_name {
     default = "kubernetes-key-pair"
 }
@@ -51,3 +49,38 @@ variable num_minions {
     default = 3
 }
 
+variable enable_extra_minion_security_group {
+    default = false
+}
+
+variable extra_minion_security_group {
+    description = "Extra security groups that will be allow to talk to the minions"
+    default = ""
+}
+
+variable extra_minion_security_group_port {
+    description = "Port on which the extra security groups that will be allow to talk to the minions"
+    default = 80
+}
+
+variable enable_frontend_elb {
+    default = true
+}
+
+data "aws_availability_zones" "available" {}
+
+output vpc_id {
+    value = "${aws_vpc.main.id}"
+}
+
+output subnets {
+    value = ["${aws_subnet.main.*.id}"]
+}
+
+output minions {
+    value = ["${aws_instance.minion.*.id}"]
+}
+
+output minion_security_group {
+    value = "${aws_security_group.minions.id}"
+}
