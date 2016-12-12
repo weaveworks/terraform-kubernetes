@@ -151,6 +151,7 @@ resource "aws_security_group_rule" "minions-allow-extra" {
 }
 
 resource "aws_security_group" "frontend-elb" {
+    count = "${var.enable_frontend_elb}"
     vpc_id = "${aws_vpc.main.id}"
     name = "k8s-elb-${var.elb_name}"
     description = "Security group for Kubernetes ELB ${var.elb_name} (default/frontend)"
@@ -161,6 +162,7 @@ resource "aws_security_group" "frontend-elb" {
 }
 
 resource "aws_security_group_rule" "frontend-elb-allow-http" {
+    count = "${var.enable_frontend_elb}"
     security_group_id = "${aws_security_group.frontend-elb.id}"
 
     type = "ingress"
@@ -171,6 +173,7 @@ resource "aws_security_group_rule" "frontend-elb-allow-http" {
 }
 
 resource "aws_security_group_rule" "frontend-elb-allow-https" {
+    count = "${var.enable_frontend_elb}"
     security_group_id = "${aws_security_group.frontend-elb.id}"
 
     type = "ingress"
@@ -181,6 +184,7 @@ resource "aws_security_group_rule" "frontend-elb-allow-https" {
 }
 
 resource "aws_security_group_rule" "frontend-elb-allow-icmp" {
+    count = "${var.enable_frontend_elb}"
     security_group_id = "${aws_security_group.frontend-elb.id}"
 
     type = "ingress"
@@ -191,6 +195,7 @@ resource "aws_security_group_rule" "frontend-elb-allow-icmp" {
 }
 
 resource "aws_security_group_rule" "frontend-elb-allow-egress" {
+    count = "${var.enable_frontend_elb}"
     security_group_id = "${aws_security_group.frontend-elb.id}"
 
     type = "egress"

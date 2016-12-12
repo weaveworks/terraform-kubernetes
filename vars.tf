@@ -58,6 +58,10 @@ variable extra_minion_security_group {
     default = ""
 }
 
+variable enable_frontend_elb {
+    default = true
+}
+
 data "aws_availability_zones" "available" {}
 
 output vpc_id {
