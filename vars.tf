@@ -2,10 +2,6 @@ variable cluster_name {
     description = "The name of the cluster; will be used to tag objects in AWS.  Each cluster should have a different name to allow multiple clusters to exist in the same AWS region / account."
 }
 
-variable elb_name {
-    description = "The name of the ELB. Required."
-}
-
 variable vpc_cidr_block {
     default = "172.20.0.0/16"
 }
@@ -61,10 +57,6 @@ variable extra_minion_security_group {
 variable extra_minion_security_group_port {
     description = "Port on which the extra security groups that will be allow to talk to the minions"
     default = 80
-}
-
-variable enable_frontend_elb {
-    default = true
 }
 
 data "aws_availability_zones" "available" {}
