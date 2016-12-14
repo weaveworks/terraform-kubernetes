@@ -76,3 +76,7 @@ output minions {
 output minion_security_group {
     value = "${aws_security_group.minions.id}"
 }
+
+output availability_zones_in_use {
+    value = "${aws_instance.minion.*.availability_zone}"
+}
