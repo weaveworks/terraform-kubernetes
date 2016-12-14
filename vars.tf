@@ -78,5 +78,5 @@ output minion_security_group {
 }
 
 output availability_zones_in_use {
-    value = "${aws_instance.minion.*.availability_zone}"
+    value = "${aws_subnet.main.*.availability_zone}"
 }
