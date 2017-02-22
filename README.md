@@ -1,8 +1,10 @@
 # terraform-kubernetes
 
-A terraform module for provisioning AWS resources (VMs, VPC, route table etc) for running a Kubernetes cluster.
+A terraform module for provisioning AWS resources (VMs, VPC, route table etc) for running a Kubernetes cluster.  Builds a multi-master, multi-AZ cluster for Kubernetes.
 
 NB this will not provision a functional Kubernetes cluster, just the VMs to run it on.  We use this to provision the cluster behind [Weave Cloud](https://cloud.weave.works).
+
+See ["Provisioning and Lifecycle of a Production Ready Kubernetes Cluster"](https://www.weave.works/provisioning-lifecycle-production-ready-kubernetes-cluster/) for more info.
 
 You can parameterise the number of masters, minions and availability zones to use.  Masters and minions will be round-robined across the availability zones.  For more information see [vars.tf](vars.tf).
 
