@@ -55,7 +55,7 @@ resource "aws_subnet" "main" {
 
     vpc_id = "${aws_vpc.main.id}"
     cidr_block = "${cidrsubnet(var.vpc_cidr_block, 8, count.index + 1)}"
-    availability_zone = "${element(data.aws_availability_zones.available.names, count.index)}"
+    availability_zone = "${element(var.availibility_zones, count.index)}"
 
     tags {
         KubernetesCluster = "${var.cluster_name}"

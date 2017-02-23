@@ -59,7 +59,9 @@ variable extra_minion_security_group_port {
     default = 80
 }
 
-data "aws_availability_zones" "available" {}
+variable availibility_zones {
+  type = "list"
+}
 
 output vpc_id {
     value = "${aws_vpc.main.id}"

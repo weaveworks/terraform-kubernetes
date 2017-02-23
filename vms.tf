@@ -28,7 +28,7 @@ resource "aws_instance" "master" {
     // own IP.
     source_dest_check = false
     subnet_id = "${element(aws_subnet.main.*.id, count.index % var.num_azs)}"
-    availability_zone = "${element(data.aws_availability_zones.available.names, count.index % var.num_azs)}"
+    availability_zone = "${element(var.availibility_zones, count.index % var.num_azs)}"
     vpc_security_group_ids = ["${aws_security_group.masters.id}"]
 
     ephemeral_block_device {
@@ -67,7 +67,7 @@ resource "aws_instance" "minion" {
     // own IP.
     source_dest_check = false
     subnet_id = "${element(aws_subnet.main.*.id, count.index % var.num_azs)}"
-    availability_zone = "${element(data.aws_availability_zones.available.names, count.index % var.num_azs)}"
+    availability_zone = "${element(var.availibility_zones, count.index % var.num_azs)}"
     vpc_security_group_ids = ["${aws_security_group.minions.id}"]
 
     ephemeral_block_device {
