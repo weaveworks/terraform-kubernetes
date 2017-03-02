@@ -63,6 +63,11 @@ variable availibility_zones {
   type = "list"
 }
 
+variable elb_name {
+  type = "string"
+  default = "kubernetes-master"
+}
+
 output vpc_id {
     value = "${aws_vpc.main.id}"
 }
