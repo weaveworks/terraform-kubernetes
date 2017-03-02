@@ -1,6 +1,6 @@
 // ELB for the k8s API
 resource "aws_elb" "master" {
-    name = "kubernetes-master"
+    name = "${var.elb_name}"
     subnets = ["${aws_subnet.main.*.id}"]
     security_groups = ["${aws_security_group.master-elb.id}"]
 
