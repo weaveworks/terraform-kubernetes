@@ -6,6 +6,7 @@ resource "aws_elb" "master" {
 
     tags {
         KubernetesCluster = "${var.cluster_name}"
+        product_area = "infra"
     }
 
     listener {

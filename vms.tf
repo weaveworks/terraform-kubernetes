@@ -19,6 +19,7 @@ resource "aws_instance" "master" {
         KubernetesCluster = "${var.cluster_name}"
         Name = "${var.cluster_name}-master"
         Role = "${var.cluster_name}-master"
+        product_area = "infra"
     }
 
     associate_public_ip_address = true
@@ -58,6 +59,7 @@ resource "aws_instance" "minion" {
         KubernetesCluster = "${var.cluster_name}"
         Name = "${var.cluster_name}-minion"
         Role = "${var.cluster_name}-minion"
+        product_area = "infra-minions"
     }
 
     associate_public_ip_address = true
